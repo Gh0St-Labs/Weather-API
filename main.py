@@ -3,9 +3,15 @@ import pandas as pd
 
 the_app = Flask("MyWeatherAPI")
 
+station_data = pd.read_csv('data_small\\stations.txt', skiprows=17)
+del station_data['CN']
+del station_data['      LAT']
+del station_data['       LON']
+del station_data['HGHT']
+
 @the_app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", data=station_data.to_html())
 
 @the_app.route("/myweatherapi/v1/<enter_station_no_here>/<enter_date_here>")
 def about(enter_station_no_here, enter_date_here):
