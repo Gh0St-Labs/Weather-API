@@ -24,5 +24,20 @@ def about(enter_station_no_here, enter_date_here):
     return {"Your Station No:":user_station, "Date:":user_date, "Temperature:":user_temperature,
             "Temperature in Fahrenheit":ut_fahrenheit}
 
+@the_app.route('/myweatherapi/v1/<enter_station_no_here>')
+def only_station(enter_station_no_here):
+    station_data_and_stuff = "data_small/TG_STAID" + str(enter_station_no_here).zfill(6) + ".txt"
+    data = pd.read_csv(station_data_and_stuff, skiprows=20, parse_dates=['    DATE'])
+    result = data.to_dict(orient="records")
+    return result
+
+@the_app.route('/myweatherapi/annual/v1/<enter_station_no_here>/<enter_year_here>')
+def station_and_year(enter_station_no_here,enter_year_here):
+    station_data_and_stuff = "data_small/TG_STAID" + str(enter_station_no_here).zfill(6) + ".txt"
+    data = pd.read_csv(station_data_and_stuff, skiprows=20)
+    data['    DATE'] = data['    DATE'].astype(str)
+    result = data.loc[data['    DATE'].str.startswith(str(enter_year_here))].to_dict(orient="records")
+    return result
+
 if __name__ == "__main__":
-    the_app.run(debug=True)      
+    the_app.run(debug=True)
